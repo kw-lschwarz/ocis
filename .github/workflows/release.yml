@@ -303,10 +303,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Download generated code
+      - name: Download generated go code
         uses: actions/download-artifact@v7
         with:
-          name: generated-code
+          name: generated-code-go
+          path: .
+
+      - name: Download generated node code
+        uses: actions/download-artifact@v7
+        with:
+          name: generated-code-nodejs
           path: .
 
       - name: Setup Go
@@ -381,10 +387,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Download generated code
+      - name: Download generated go code
         uses: actions/download-artifact@v7
         with:
-          name: generated-code
+          name: generated-code-go
+          path: .
+
+      - name: Download generated node code
+        uses: actions/download-artifact@v7
+        with:
+          name: generated-code-nodejs
           path: .
 
       - name: Setup Node.js
