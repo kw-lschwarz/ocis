@@ -193,7 +193,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
 
       - name: Install additional packages
-        run: sudo apt install -y libvips
+        run: sudo apt install -y libvips libvips-dev
 
       - name: Build binary
         run: make -C ocis release-linux-docker-${{ matrix.arch }} ENABLE_VIPS=true
@@ -645,8 +645,11 @@ jobs:
   # ============================================================================
 
   notify:
-    runs-on: ubuntu-latest
     name: Send message via Matrix
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs:
+      - deploy-examples
     steps:
     - name: Send message to test channel
       id: matrix-chat-message
