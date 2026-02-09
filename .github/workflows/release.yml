@@ -8,8 +8,7 @@ name: Release
 on:
   push:
     branches:
-      - main
-
+      - master
 
 env:
   # Production release tags (semver patterns)
