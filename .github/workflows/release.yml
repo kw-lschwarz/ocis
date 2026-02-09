@@ -158,10 +158,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Download generated code
-        uses: actions/download-artifact@v4
+      - name: Download generated go code
+        uses: actions/download-artifact@v7
         with:
-          name: generated-code
+          name: generated-code-go
+          path: .
+
+      - name: Download generated node code
+        uses: actions/download-artifact@v7
+        with:
+          name: generated-code-nodejs
           path: .
 
       - name: Set up QEMU
@@ -292,7 +298,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download generated code
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: generated-code
           path: .
@@ -328,7 +334,7 @@ jobs:
             #      os: [linux, darwin]
             #  steps:
             #    - name: Download binaries
-            #      uses: actions/download-artifact@v4
+            #      uses: actions/download-artifact@v7
             #      with:
             #        name: binaries-${{ matrix.os }}
             #        path: binaries
@@ -370,7 +376,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download generated code
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: generated-code
           path: .
@@ -476,25 +482,25 @@ jobs:
       - generate-changelog
     steps:
       - name: Download Linux binaries
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: binaries-linux
           path: release-assets
 
       - name: Download Darwin binaries
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: binaries-darwin
           path: release-assets
 
       - name: Download licenses
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: third-party-licenses
           path: release-assets
 
       - name: Download changelog
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: changelog
           path: .
