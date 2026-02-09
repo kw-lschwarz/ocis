@@ -610,56 +610,18 @@ jobs:
   # ============================================================================
 
   notify:
-    - uses: lkiesow/matrix-notification@v1
-    with:
-      # The Matrix home server to send the message to
-      # Default: matrix.org
-      server: matrix.org
-
-      # Secret token used for authentication.
-      token: ${{ secrets.MATRIX_TOKEN }}
-
-      # Identifier of the room to send the message to
-      room: '!bdzlCtTAyDFgIdlknw:lkas.cc'
-
-      # The type of message to send
-      # Default: m.text
-      message_type: m.notice
-
-      # The message to send (optional)
-      message: Hello world
-
-      # An HTML formatted version of the message to send (optional)
-      formatted_message: Hello <b>World</b>!
-
-      # If to install the matrix-msg binary
-      # Default: false
-      tool: false
-
-        #notify:
-        #  name: Send Notifications
-        #  runs-on: ubuntu-latest
-        #  needs:
-        #    - docker-readme
-        #    - create-github-release
-        #    - publish-documentation
-        #    - deploy-examples
-        #  if: always()
-        #  steps:
-        #    - name: Checkout code
-        #      uses: actions/checkout@v4
-
-        #    - name: Download notification script
-        #      run: |
-        #        wget https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/tests/config/drone/notification.sh
-
-        #    - name: Send Matrix notification
-        #      run: bash notification.sh
-        #      env:
-        #        MATRIX_TOKEN: ${{ secrets.MATRIX_TOKEN }}
-        #        DRONE_BUILD_STATUS: ${{ job.status }}
-        #        DRONE_BUILD_EVENT: tag
-        #        DRONE_REPO: ${{ github.repository }}
-        #        DRONE_BUILD_NUMBER: ${{ github.run_number }}
-        #        DRONE_BUILD_LINK: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    runs-on: ubuntu-latest
+    name: Send message via Matrix
+    steps:
+    - name: Send message to test channel
+      id: matrix-chat-message
+      uses: fadenb/matrix-chat-message@v0.0.6
+      with:
+        homeserver: 'lkas.cc'
+        token: ${{ secrets.MATRIX_TOKEN }}
+        channel: '!bdzlCtTAyDFgIdlknw:lkas.cc'
+        message: |
+          This is an *example message* using **markdown** for formatting.\
+          Use a `\` character at the end of a line to cause a linebreak (the whole message is treated as markdown).\
+          You can use variables like ${{ github.sha }} anywhere.
 
