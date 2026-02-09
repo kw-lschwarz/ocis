@@ -108,7 +108,7 @@ jobs:
       - name: Upload generated code
         uses: actions/upload-artifact@v4
         with:
-          name: generated-code
+          name: generated-code-go
           path: |
             .
             !.git
@@ -137,7 +137,7 @@ jobs:
       - name: Upload generated code
         uses: actions/upload-artifact@v4
         with:
-          name: generated-code
+          name: generated-code-nodejs
           path: |
             .
             !.git
@@ -626,11 +626,8 @@ jobs:
       id: matrix-chat-message
       uses: fadenb/matrix-chat-message@v0.0.6
       with:
-        homeserver: 'matrix.lkas.cc'
+        homeserver: ${{ secrets.MATRIX_HOMESERVER }}
         token: ${{ secrets.MATRIX_TOKEN }}
-        channel: '!bdzlCtTAyDFgIdlknw:lkas.cc'
+        channel: ${{ secrets.MATRIX_ROOMID }}
         message: |
-          This is an *example message* using **markdown** for formatting.\
-          Use a `\` character at the end of a line to cause a linebreak (the whole message is treated as markdown).\
-          You can use variables like ${{ github.sha }} anywhere.
-
+          **✅ Success** [${{ github.repository }}#${{ github.sha }}](${{ github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}) (TODO: BUILD_SOURCE ) by **${{ github.triggering_actor }}
