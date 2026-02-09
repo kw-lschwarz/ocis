@@ -116,16 +116,16 @@ jobs:
           version: 8
 
       - name: Generate Node.js code
+        uses: docker://owncloudci/nodejs:22
         run: |
           pnpm config set store-dir ./.pnpm-store
           make ci-node-generate
-        uses: docker://owncloudci/nodejs:22
         env:
           CHROMEDRIVER_SKIP_DOWNLOAD: 'true'
 
       - name: Generate Go code
-        run: make ci-go-generate
         uses: docker://owncloudci/golang:1.24
+        run: make ci-go-generate
 
       - name: Upload generated code
         uses: actions/upload-artifact@v4
