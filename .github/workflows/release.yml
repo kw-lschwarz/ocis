@@ -162,7 +162,7 @@ jobs:
   docker-build:
     name: Build Docker Image (${{ matrix.arch }})
     runs-on: ubuntu-latest
-    needs: [determine-release-type, generate-code]
+    needs: [determine-release-type, generate-code-nodejs, generate-code-go]
     strategy:
       matrix:
         arch: [amd64, arm64]
@@ -295,7 +295,7 @@ jobs:
   build-binaries:
     name: Build Binaries (${{ matrix.os }})
     runs-on: ubuntu-latest
-    needs: [determine-release-type, generate-code]
+    needs: [determine-release-type, generate-code-go, generate-code-nodejs]
     strategy:
       matrix:
         os: [linux, darwin]
@@ -376,7 +376,7 @@ jobs:
   license-check:
     name: Check and Upload Licenses
     runs-on: ubuntu-latest
-    needs: [determine-release-type, generate-code]
+    needs: [determine-release-type, generate-code-nodejs, generate-code-go]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
