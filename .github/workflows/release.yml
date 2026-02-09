@@ -193,6 +193,9 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
 
+      - name: Install additional packages
+        run: sudo apt install -y libvips
+
       - name: Build binary
         run: make -C ocis release-linux-docker-${{ matrix.arch }} ENABLE_VIPS=true
 
