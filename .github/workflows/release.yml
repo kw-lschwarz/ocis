@@ -195,7 +195,7 @@ jobs:
       - name: Install additional packages
         run: |
           sudo apt update
-          sudo apt install -y libvips libvips-dev pkg-config gcc-aarch64-linux-gnu
+          sudo apt install -y libvips libvips-dev pkg-config gcc-aarch64-linux-gnu musl-dev
           sudo apt list -i
 
       - name: Build binary
@@ -660,10 +660,7 @@ jobs:
     steps:
 
     - name: Set short git commit SHA
-      id: vars
-      run: |
-        calculatedSha=$(git rev-parse --short ${{ github.sha }})
-        echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+      run: echo "SHORT_SHA=`echo ${{ github.sha }} | cut -c1-8`" >> $GITHUB_ENV
 
     - name: Set failure message
       if: ${{ failure() }}
@@ -689,4 +686,4 @@ jobs:
         token: ${{ secrets.MATRIX_TOKEN }}
         channel: ${{ secrets.MATRIX_ROOMID }}
         message: |
-          **${{ env.BUILD_STATUS }}** [${{ github.repository }}#${{ env.COMMIT_SHORT_SHA }}](${{ github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}) (TODO: BUILD_SOURCE ) by **${{ github.triggering_actor }}**
+          **${{ env.BUILD_STATUS }}** [${{ github.repository }}#${{ env.SHORT_SHA }}](${{ github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}) (TODO: BUILD_SOURCE ) by **${{ github.triggering_actor }}**
