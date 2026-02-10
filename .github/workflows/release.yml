@@ -652,13 +652,36 @@ jobs:
   # ============================================================================
 
   notify:
-    name: Send message via Matrix
+    name: Notify Matrix room
     runs-on: ubuntu-latest
     if: ${{ always() }}
-    needs:
-      - deploy-examples
+      #needs:
+      #- deploy-examples
     steps:
-    - name: Send message to test channel
+
+    - name: Set short git commit SHA
+      id: vars
+      run: |
+        calculatedSha=$(git rev-parse --short ${{ github.sha }})
+        echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+
+    - name: Set failure message
+      if: ${{ failure() }}
+      run: echo 'BUILD_STATUS="❌️ Failure"' >> $GITHUB_ENV
+
+    - name: Set success message
+      if: ${{ success() }}
+      run: echo 'BUILD_STATUS="✅ Success"' >> $GITHUB_ENV
+
+        #- name: Set build source tag
+        #  if: github.event_name == 'release'
+        #  run: echo 'BUILD_SOURCE=tag ${{ github.event_name }}' >> $GITHUB_ENV
+
+        #- name: Set build source branch
+        #  if: github.event_name == ''
+        #  run: echo BUILD_SOURCE=${{ github. }} >> $GITHUB_ENV
+
+    - name: Send message to Matrix room
       id: matrix-chat-message
       uses: fadenb/matrix-chat-message@v0.0.6
       with:
@@ -666,4 +689,4 @@ jobs:
         token: ${{ secrets.MATRIX_TOKEN }}
         channel: ${{ secrets.MATRIX_ROOMID }}
         message: |
-          **✅ Success** [${{ github.repository }}#${{ github.sha }}](${{ github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}) (TODO: BUILD_SOURCE ) by **${{ github.triggering_actor }}**
+          **${{ env.BUILD_STATUS }}** [${{ github.repository }}#${{ env.COMMIT_SHORT_SHA }}](${{ github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}) (TODO: BUILD_SOURCE ) by **${{ github.triggering_actor }}**
