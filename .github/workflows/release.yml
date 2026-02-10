@@ -25,7 +25,7 @@ env:
   PNPM_VERSION: '10.11.0'
 
   # S3 configuration
-  S3_ENDPOINT: s3.dualstack.eu-central-1.amazonaws.com
+  S3_ENDPOINT: https://s3.dualstack.eu-central-1.amazonaws.com
 
 jobs:
   # ============================================================================
