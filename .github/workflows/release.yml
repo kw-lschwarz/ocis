@@ -660,7 +660,7 @@ jobs:
     name: Notify Matrix room
     runs-on: ubuntu-latest
     if: ${{ always() }}
-      needs:
+    needs:
       - deploy-examples
     steps:
 
