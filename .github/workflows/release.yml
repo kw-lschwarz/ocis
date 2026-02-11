@@ -667,11 +667,11 @@ jobs:
 
     - name: Set failure message
       if: ${{ failure() }}
-      run: echo 'BUILD_STATUS="❌️ Failure"' >> $GITHUB_ENV
+        run: echo 'BUILD_STATUS=❌️ Failure' >> $GITHUB_ENV
 
     - name: Set success message
       if: ${{ success() }}
-      run: echo 'BUILD_STATUS="✅ Success"' >> $GITHUB_ENV
+      run: echo 'BUILD_STATUS=✅ Success' >> $GITHUB_ENV
 
         #- name: Set build source tag
         #  if: github.event_name == 'release'
