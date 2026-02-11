@@ -204,7 +204,7 @@ jobs:
           CGO_ENABLED: 1
           GOOS: linux
           GOARCH: arm64
-          CC: arm-eabi-gcc
+          CC: arm-none-eabi-gcc
 
       - name: Extract metadata
         id: meta
