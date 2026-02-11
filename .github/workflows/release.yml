@@ -196,7 +196,7 @@ jobs:
       - name: Install additional packages
         run: |
           sudo apt update
-          sudo apt install -y libvips libvips-dev pkg-config gcc-aarch64-linux-gnu musl-dev
+          sudo apt install -y libvips libvips-dev pkg-config gcc-aarch64-linux-gnu musl-dev libc-dev libc6-dev-i386-cross libc6-dev-i386-x32-cross
           sudo apt list -i
 
       - name: Build binary
