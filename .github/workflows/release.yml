@@ -660,8 +660,8 @@ jobs:
     name: Notify Matrix room
     runs-on: ubuntu-latest
     if: ${{ always() }}
-      #needs:
-      #- deploy-examples
+      needs:
+      - deploy-examples
     steps:
 
     - name: Set short git commit SHA
