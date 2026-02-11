@@ -675,13 +675,17 @@ jobs:
       if: ${{ success() }}
       run: echo 'BUILD_STATUS=✅ Success' >> $GITHUB_ENV
 
-        #- name: Set build source tag
-        #  if: github.event_name == 'release'
-        #  run: echo 'BUILD_SOURCE=tag ${{ github.event_name }}' >> $GITHUB_ENV
+    - name: Set build source default
+      run: echo 'BUILD_SOURCE=${{ github.ref_name }}' >> $GITHUB_ENV
 
-        #- name: Set build source branch
-        #  if: github.event_name == ''
-        #  run: echo BUILD_SOURCE=${{ github. }} >> $GITHUB_ENV
+    - name: Set build source cron/schedule
+      if: github.event_name == 'schedule'
+      run: echo 'BUILD_SOURCE=nightly-${{ github.ref_name }}' >> $GITHUB_ENV
+
+    - name: Set build source tag
+      if: github.ref_type == 'tag'
+      run: echo 'BUILD_SOURCE=tag ${{ github.ref_name }}' >> $GITHUB_ENV
+
 
     - name: Send message to Matrix room
       id: matrix-chat-message
@@ -691,4 +695,4 @@ jobs:
         token: ${{ secrets.MATRIX_TOKEN }}
         channel: ${{ secrets.MATRIX_ROOMID }}
         message: |
-          **${{ env.BUILD_STATUS }}** [${{ github.repository }}#${{ env.SHORT_SHA }}](${{ github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}) (TODO: BUILD_SOURCE ) by **${{ github.triggering_actor }}**
+          **${{ env.BUILD_STATUS }}** [${{ github.repository }}#${{ env.SHORT_SHA }}](${{ github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}) (${{ env.BUILD_SOURCE }} ) by **${{ github.triggering_actor }}**
