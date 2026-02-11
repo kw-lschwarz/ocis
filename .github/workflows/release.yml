@@ -98,6 +98,31 @@ jobs:
   # CODE GENERATION
   # ============================================================================
 
+  generate-code-go-native:
+    name: Generate go Code (but natively!)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Generate Go code
+        run: make ci-go-generate
+
+      - name: Upload generated code
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-code-go
+          path: |
+            .
+            !.git
+          retention-days: 1
+
+
   generate-code-go:
     name: Generate go Code
     runs-on: ubuntu-latest
