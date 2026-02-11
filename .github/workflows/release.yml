@@ -158,7 +158,8 @@ jobs:
     needs: [determine-release-type, generate-code-nodejs, generate-code-go]
     strategy:
       matrix:
-        arch: [amd64, arm64]
+        #arch: [amd64, arm64]
+        arch: [arm64]
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -197,6 +198,9 @@ jobs:
           sudo apt update
           sudo apt install -y libvips libvips-dev pkg-config gcc-aarch64-linux-gnu musl-dev
           sudo apt list -i
+
+      - name: Install ARM GNU toolchain
+        uses: carlosperate/arm-none-eabi-gcc-action@v1
 
       - name: Build binary
         run: make -C ocis release-linux-docker-${{ matrix.arch }} ENABLE_VIPS=true
