@@ -123,39 +123,22 @@ jobs:
           retention-days: 1
 
 
-  generate-code-go:
-    name: Generate go Code
+  generate-code-nodejs-native:
+    name: Generate nodejs Code (but natively!)
     runs-on: ubuntu-latest
-    container:
-      image: owncloudci/golang:1.24
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Generate Go code
-        run: make ci-go-generate
-
-      - name: Upload generated code
-        uses: actions/upload-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
         with:
-          name: generated-code-go
-          path: |
-            .
-            !.git
-          retention-days: 1
+          node-version: ${{ env.NODE_VERSION }}
 
-
-  generate-code-nodejs:
-    name: Generate nodejs Code
-    runs-on: ubuntu-latest
-    container:
-      image: owncloudci/nodejs:22
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Make repo path a safe directory
-        run: git config --global --add safe.directory /__w/ocis/ocis
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
 
       - name: Generate Node.js code
         run: |
