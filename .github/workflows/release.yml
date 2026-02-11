@@ -1,14 +1,14 @@
 name: Release
 
-  #on:
-  #  push:
-  #    tags:
-  #      - 'v*'
-
 on:
   push:
-    branches:
-      - master
+    tags:
+      - 'v*'
+
+  #on:
+  #  push:
+  #    branches:
+  #      - master
 
 env:
   # Production release tags (semver patterns)
