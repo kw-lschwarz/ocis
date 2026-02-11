@@ -98,8 +98,8 @@ jobs:
   # CODE GENERATION
   # ============================================================================
 
-  generate-code-go:
-    name: Generate go Code (but natively!)
+  generate-code:
+    name: Generate code
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -109,26 +109,6 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
-
-      - name: Generate Go code
-        run: make ci-go-generate
-
-      - name: Upload generated code
-        uses: actions/upload-artifact@v4
-        with:
-          name: generated-code-go2
-          path: |
-            .
-            !.git
-          retention-days: 1
-
-
-  generate-code-nodejs:
-    name: Generate nodejs Code (but natively!)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -150,10 +130,13 @@ jobs:
         env:
           CHROMEDRIVER_SKIP_DOWNLOAD: 'true'
 
+      - name: Generate Go code
+        run: make ci-go-generate
+
       - name: Upload generated code
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
-          name: generated-code-nodejs
+          name: generated-code
           path: |
             .
             !.git
@@ -173,7 +156,7 @@ jobs:
   docker-build:
     name: Build Docker Image (${{ matrix.arch }})
     runs-on: ${{ fromJSON(needs.determine-runners.outputs.runners)[matrix.arch] }}
-    needs: [determine-release-type, determine-runners, generate-code-nodejs, generate-code-go]
+    needs: [determine-release-type, determine-runners, generate-code]
     strategy:
       matrix:
         arch: [amd64, arm64]
@@ -181,16 +164,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Download generated go code
+      - name: Download generated code
         uses: actions/download-artifact@v7
         with:
-          name: generated-code-go
-          path: .
-
-      - name: Download generated node code
-        uses: actions/download-artifact@v7
-        with:
-          name: generated-code-nodejs
+          name: generated-code
           path: .
 
       - name: Set up Docker Buildx
@@ -203,7 +180,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
 
@@ -318,7 +295,7 @@ jobs:
   build-binaries:
     name: Build Binaries (${{ matrix.os }})
     runs-on: ubuntu-latest
-    needs: [determine-release-type, generate-code-go, generate-code-nodejs]
+    needs: [determine-release-type, generate-code]
     strategy:
       matrix:
         os: [linux, darwin]
@@ -326,16 +303,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Download generated go code
+      - name: Download generated code
         uses: actions/download-artifact@v7
         with:
-          name: generated-code-go
-          path: .
-
-      - name: Download generated node code
-        uses: actions/download-artifact@v7
-        with:
-          name: generated-code-nodejs
+          name: generated-code
           path: .
 
       - name: Setup Go
@@ -354,7 +325,7 @@ jobs:
           fi
 
       - name: Upload binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: binaries-${{ matrix.os }}
           path: ocis/dist/release/*
@@ -405,21 +376,15 @@ jobs:
   license-check:
     name: Check and Upload Licenses
     runs-on: ubuntu-latest
-    needs: [determine-release-type, generate-code-nodejs, generate-code-go]
+    needs: [determine-release-type, generate-code]
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Download generated go code
+      - name: Download generated code
         uses: actions/download-artifact@v7
         with:
-          name: generated-code-go
-          path: .
-
-      - name: Download generated node code
-        uses: actions/download-artifact@v7
-        with:
-          name: generated-code-nodejs
+          name: generated-code
           path: .
 
       - name: Setup Node.js
@@ -473,7 +438,7 @@ jobs:
             #      --endpoint-url ${{ env.S3_ENDPOINT }}
 
       - name: Upload licenses artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: third-party-licenses
           path: third-party-licenses.tar.gz
@@ -506,7 +471,7 @@ jobs:
           make changelog CHANGELOG_VERSION=$CHANGELOG_VERSION
 
       - name: Upload changelog
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: changelog
           path: ocis/dist/CHANGELOG.md
