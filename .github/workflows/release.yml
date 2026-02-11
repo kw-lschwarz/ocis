@@ -98,7 +98,7 @@ jobs:
   # CODE GENERATION
   # ============================================================================
 
-  generate-code-go-native:
+  generate-code-go:
     name: Generate go Code (but natively!)
     runs-on: ubuntu-latest
     steps:
@@ -123,7 +123,7 @@ jobs:
           retention-days: 1
 
 
-  generate-code-nodejs-native:
+  generate-code-nodejs:
     name: Generate nodejs Code (but natively!)
     runs-on: ubuntu-latest
     steps:
