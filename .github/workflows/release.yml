@@ -177,10 +177,20 @@ jobs:
   # DOCKER BUILDS
   # ============================================================================
 
+  determine-runners:
+    runs-on: ubuntu-latest
+    outputs:
+      runners: '{"arm64":"ubuntu-24.04-arm", "amd64": "ubuntu-24.04"}'
+    steps:
+      - run: echo no-op
+
   docker-build:
-    name: Build Docker Image (arm64)
-    runs-on: ubuntu-24.04-arm
-    needs: [determine-release-type, generate-code-nodejs, generate-code-go]
+    name: Build Docker Image (${{ matrix.arch }})
+    runs-on: ${{ fromJSON(needs.determine-runners.outputs.runners)[matrix.arch] }}
+    needs: [determine-release-type, determine-runners, generate-code-nodejs, generate-code-go]
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -217,10 +227,11 @@ jobs:
           sudo apt install -y libvips libvips-dev
 
       - name: Build binary
-        run: make -C ocis release-linux-docker-arm64 ENABLE_VIPS=true
+        run: make -C ocis release-linux-docker-${{ matrix.arch }}
         env:
           CGO_ENABLED: 1
           GOOS: linux
+          ENABLE_VIPS: true
 
       - name: Extract metadata
         id: meta
