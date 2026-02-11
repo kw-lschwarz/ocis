@@ -135,6 +135,9 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Install npm packages
+        run: npm install --silent -g yarn npx --force
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
