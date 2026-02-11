@@ -695,4 +695,4 @@ jobs:
         token: ${{ secrets.MATRIX_TOKEN }}
         channel: ${{ secrets.MATRIX_ROOMID }}
         message: |
-          **${{ env.BUILD_STATUS }}** [${{ github.repository }}#${{ env.SHORT_SHA }}](${{ github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}) (${{ env.BUILD_SOURCE }} ) by **${{ github.triggering_actor }}**
+          **${{ env.BUILD_STATUS }}** [${{ github.repository }}#${{ env.SHORT_SHA }}](${{ github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}) (${{ env.BUILD_SOURCE }}) by **${{ github.triggering_actor }}**
