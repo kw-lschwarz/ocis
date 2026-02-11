@@ -132,6 +132,8 @@ jobs:
 
       - name: Generate Go code
         run: make ci-go-generate
+        env:
+          BUF_TOKEN: ${{ secrets.BUF_API_TOKEN }}
 
       - name: Upload generated code
         uses: actions/upload-artifact@v6
