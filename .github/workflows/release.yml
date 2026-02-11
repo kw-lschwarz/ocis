@@ -202,7 +202,9 @@ jobs:
         run: make -C ocis release-linux-docker-${{ matrix.arch }} ENABLE_VIPS=true
         env:
           CGO_ENABLED: 1
-
+          GOOS: linux
+          GOARCH: arm64
+          CC: arm-eabi-gcc
 
       - name: Extract metadata
         id: meta
