@@ -221,9 +221,6 @@ jobs:
       - name: Write outputs
         run: echo digest-${{ matrix.arch }}=${{ steps.build-and-push.outputs.digest }} >> $GITHUB_OUTPUT
 
-      - name: Write outputs
-        run: echo digest-${{ matrix.arch }}=${{ steps.build-and-push.outputs.digest }} >> $GITHUB_OUTPUT
-
   docker-manifest:
     name: Create Docker Manifest
     runs-on: ubuntu-latest
@@ -244,9 +241,7 @@ jobs:
         uses: int128/docker-manifest-create-action@v2
         with:
           tags: ${{ env.DOCKER_REPO_PRODUCTION }}:${{ needs.determine-release-type.outputs.version }}
-          sources: |
-            ${{ github.repository }}@${{ needs.docker-build.outputs.digest-amd64 }}
-            ${{ github.repository }}@${{ needs.docker-build.outputs.digest-arm64 }}
+          sources: ${{ github.repository }}@${{ toJSON(needs.docker-build.outputs) }}
 
   docker-readme:
     name: Update Docker README
