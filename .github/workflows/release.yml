@@ -148,17 +148,10 @@ jobs:
   # DOCKER BUILDS
   # ============================================================================
 
-  determine-runners:
-    runs-on: ubuntu-latest
-    outputs:
-      runners: '{"arm64":"ubuntu-24.04-arm", "amd64": "ubuntu-24.04"}'
-    steps:
-      - run: echo no-op
-
   docker-build:
     name: Build Docker Image (${{ matrix.arch }})
-    runs-on: ${{ fromJSON(needs.determine-runners.outputs.runners)[matrix.arch] }}
-    needs: [determine-release-type, determine-runners, generate-code]
+    runs-on: ${{ matrix.arch == 'amd64' && 'ubuntu-24.04' || matrix.arch == 'arm64' && 'ubuntu-24.04-arm' }}
+    needs: [determine-release-type, generate-code]
     strategy:
       matrix:
         arch: [amd64, arm64]
@@ -209,7 +202,7 @@ jobs:
             type=semver,pattern={{major}},suffix=-linux-${{ matrix.arch }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ocis
           file: ocis/docker/Dockerfile.linux.${{ matrix.arch }}
