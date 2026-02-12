@@ -154,7 +154,7 @@ jobs:
     needs: [determine-release-type, generate-code]
     outputs:
       digest-amd64: ${{ steps.build-and-push.outputs.digest-amd64 }}
-      digest-arm64: ${{ steps.build-and-push.outputs.digest-arm64 }}
+      env.DOCKER-arm64: ${{ steps.build-and-push.outputs.digest-arm64 }}
     strategy:
       matrix:
         arch: [amd64, arm64]
@@ -235,7 +235,7 @@ jobs:
       - name: Create and push multiarch manifest
         uses: int128/docker-manifest-create-action@v2
         with:
-          tags: ${{ github.repository }}:main
+          tags: ${{ env.DOCKER_REPO_PRODUCTION }}:${{ needs.determine-release-type.outputs.version }}
           sources: |
             ${{ github.repository }}@${{ needs.docker-build.outputs.digest-amd64 }}
             ${{ github.repository }}@${{ needs.docker-build.outputs.digest-arm64 }}
