@@ -153,8 +153,8 @@ jobs:
     runs-on: ${{ matrix.arch == 'amd64' && 'ubuntu-24.04' || matrix.arch == 'arm64' && 'ubuntu-24.04-arm' }}
     needs: [determine-release-type, generate-code]
     outputs:
-      digest-amd64: ${{ steps.build-and-push.outputs.digest-amd64 }}
-      digest-arm64: ${{ steps.build-and-push.outputs.digest-arm64 }}
+      digest-amd64: ${{ steps.write-digest.outputs.digest-amd64 }}
+      digest-arm64: ${{ steps.write-digest.outputs.digest-arm64 }}
     strategy:
       matrix:
         arch: [amd64, arm64]
@@ -218,7 +218,8 @@ jobs:
             REVISION=${{ github.sha }}
             VERSION=${{ needs.determine-release-type.outputs.version }}
 
-      - name: Write outputs
+      - name: Write Digest
+        id: write-digest
         run: echo "digest-${{ matrix.arch }}=${{ steps.build-and-push.outputs.digest }}" >> $GITHUB_OUTPUT
 
   docker-manifest:
