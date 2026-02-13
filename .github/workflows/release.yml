@@ -233,29 +233,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Debug outputs
-        run: |
-          echo "${{ needs.docker-build.outputs.digest-amd64 }}"
-          echo ${{ needs.docker-build.outputs.digest-arm64 }}
-
-      - name: Debug env vars
-        env:
-          DIGEST_AMD64: ${{ needs.docker-build.outputs.digest-amd64 }}
-          DIGEST_ARM64: ${{ needs.docker-build.outputs.digest-arm64 }}
-        run: |
-          echo "$DIGEST_AMD64"
-          echo $DIGEST_ARM64
-
       - name: Create and push multiarch manifest
         uses: int128/docker-manifest-create-action@v2
-        env:
-          DIGEST_AMD64: ${{ needs.docker-build.outputs.digest-amd64 }}
-          DIGEST_ARM64: ${{ needs.docker-build.outputs.digest-arm64 }}
         with:
           tags: ${{ env.DOCKER_REPO_PRODUCTION }}:${{ needs.determine-release-type.outputs.version }}
           sources: |
-            $DIGEST_AMD64
-            $DIGEST_ARM64
+            ${{ needs.docker-build.outputs.digest-amd64 }}
+            ${{ needs.docker-build.outputs.digest-arm64 }}
 
   docker-readme:
     name: Update Docker README
