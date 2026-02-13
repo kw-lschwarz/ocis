@@ -219,7 +219,7 @@ jobs:
             VERSION=${{ needs.determine-release-type.outputs.version }}
 
       - name: Write outputs
-        run: echo digest-${{ matrix.arch }}=${{ steps.build-and-push.outputs.digest }} >> $GITHUB_OUTPUT
+        run: echo "digest-${{ matrix.arch }}=${{ steps.build-and-push.outputs.digest }}" >> $GITHUB_OUTPUT
 
   docker-manifest:
     name: Create Docker Manifest
