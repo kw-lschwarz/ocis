@@ -222,6 +222,7 @@ jobs:
         id: write-digest
         run: echo "digest-${{ matrix.arch }}=${{ steps.build-and-push.outputs.digest }}" >> $GITHUB_OUTPUT
 
+          # TODO: Make matrix stuff work
   docker-manifest:
     name: Create Docker Manifest
     runs-on: ubuntu-latest
@@ -247,19 +248,18 @@ jobs:
     needs: [determine-release-type, docker-manifest]
     strategy:
       matrix:
-        repo: ${{ fromJson(format('["{0}"]', needs.determine-release-type.outputs.docker_repos)) }}
+        repo: ['kwlschwarz/ocis', ] # TODO
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
       - name: Update DockerHub README
-        uses: peter-evans/dockerhub-description@v4
+        uses: peter-evans/dockerhub-description@v5
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ matrix.repo }}
           short-description: Docker images for ownCloud Infinite Scale
-          readme-filepath: ./README.md
 
   # ============================================================================
   # BINARY BUILDS
