@@ -492,18 +492,33 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ always() }}
     needs:
+      - determine-release-type
+      - docker-build
+      - docker-manifest
+      - docker-readme
+      - generate-code
+      - build-binaries
+      - license-check
+      - generate-changelog
       - create-github-release
+      - publish-documentation
     steps:
-
     - name: Set short git commit SHA
       run: echo "SHORT_SHA=`echo ${{ github.sha }} | cut -c1-8`" >> $GITHUB_ENV
 
+    - name: Decide whether the needed jobs succeeded or failed
+      id: check-state
+      uses: re-actors/alls-green@release/v1
+      with:
+        allowed-failures: publish-documentation
+        jobs: ${{ toJSON(needs) }}
+
     - name: Set failure message
-      if: ${{ failure() }}
+      if: ${{ steps.check-state.conclusion != 'success' }}
       run: echo 'BUILD_STATUS=❌️ Failure' >> $GITHUB_ENV
 
     - name: Set success message
-      if: ${{ success() }}
+      if: ${{ steps.check-state.conclusion == 'success' }}
       run: echo 'BUILD_STATUS=✅ Success' >> $GITHUB_ENV
 
     - name: Set build source default
@@ -516,7 +531,6 @@ jobs:
     - name: Set build source tag
       if: github.ref_type == 'tag'
       run: echo 'BUILD_SOURCE=tag ${{ github.ref_name }}' >> $GITHUB_ENV
-
 
     - name: Send message to Matrix room
       id: matrix-chat-message
