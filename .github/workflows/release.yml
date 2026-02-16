@@ -428,7 +428,7 @@ jobs:
           path: .
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2.5.0
+        uses: softprops/action-gh-release@v2.4.2
         with:
           name: ${{ needs.determine-release-type.outputs.version }}
           body_path: CHANGELOG.md
