@@ -302,6 +302,25 @@ jobs:
           retention-days: 1
 
   # ============================================================================
+  # SECURITY SCAN
+  # ============================================================================
+
+  security-scan-trivy:
+    name: Trivy Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: 'fs'
+          format: 'table'
+          exit-code: '0'
+          severity: 'CRITICAL,HIGH'
+
+  # ============================================================================
   # LICENSE CHECK
   # ============================================================================
 
@@ -502,6 +521,7 @@ jobs:
       - generate-changelog
       - create-github-release
       - publish-documentation
+      - security-scan-trivy
     steps:
     - name: Set short git commit SHA
       run: echo "SHORT_SHA=`echo ${{ github.sha }} | cut -c1-8`" >> $GITHUB_ENV
