@@ -155,6 +155,7 @@ jobs:
     strategy:
       matrix:
         arch: [amd64, arm64]
+        repo: ${{ fromJSON(needs.determine-release-type.outputs.docker_repos) }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -219,11 +220,14 @@ jobs:
         id: write-digest
         run: echo "digest-${{ matrix.arch }}=${{ steps.build-and-push.outputs.digest }}" >> $GITHUB_OUTPUT
 
-          # TODO: Make matrix stuff work
+
   docker-manifest:
     name: Create Docker Manifest
     runs-on: ubuntu-latest
     needs: [determine-release-type, docker-build]
+    strategy:
+      matrix:
+        repo: ${{ fromJSON(needs.determine-release-type.outputs.docker_repos) }}
     steps:
       - name: Login to DockerHub
         uses: docker/login-action@v3
@@ -234,7 +238,7 @@ jobs:
       - name: Create and push multiarch manifest
         uses: int128/docker-manifest-create-action@v2
         with:
-          tags: ${{ env.DOCKER_REPO_PRODUCTION }}:${{ needs.determine-release-type.outputs.version }}
+          tags: ${{ matrix.repo }}:${{ needs.determine-release-type.outputs.version }}
           sources: |
             ${{ needs.docker-build.outputs.digest-amd64 }}
             ${{ needs.docker-build.outputs.digest-arm64 }}
@@ -245,7 +249,7 @@ jobs:
     needs: [determine-release-type, docker-manifest]
     strategy:
       matrix:
-        repo: ['kwlschwarz/ocis', ] # TODO
+        repo: ${{ fromJSON(needs.determine-release-type.outputs.docker_repos) }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
